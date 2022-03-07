@@ -38,30 +38,27 @@ int main(int argc, char *argv[]){
 	char array[100][200];
 	int stepper = 0;
 
-	/*if((inputFile = (FILE*)malloc(sizeof(FILE))) == NULL){
-		printf("malloc failed");
+	if((inputFile = (FILE*)malloc(sizeof(FILE))) == NULL){
+		printf("Malloc failed.");
 		exit(1);
 	}
-	if((outputFile = (FILE*)malloc(sizeof(FILE))) == NULL){
-		printf("malloc failed");
-		exit(1);
-	}
-	//inputfilename = *argv[1];
+	/*
+	inputfilename = *argv[1];
 
 	strcpy(inputfilename,argv[1]);
 	printf("%s\n",inputfilename);*/
 
 	if(argc < 2){
-		printf("Not enough arguments\n");
+		printf("Not enough arguments.");
 		exit(1);
 	}
 
     inputFile = fopen("file.txt","r");
 	if(inputFile == NULL){
-        printf("Lopetetaan");
+        printf("No such file exists.");
         exit(1);
 	}
-	while(fgets(line,100,inputFile) != NULL){
+	while(fgets(line,200,inputFile) != NULL){
         strcpy(array[stepper],line);
 		printf("%s",array[stepper]);
 		stepper += 1;
@@ -72,21 +69,29 @@ int main(int argc, char *argv[]){
 
 	switch(argc){
 		case 2:
-			for(stepper; stepper > -1; stepper--){
+			for(; stepper > -1; stepper--){
 				printf("%s",array[stepper]);
 			}
-
-
 			break;
+
 		case 3:
-			printf("3\n");
+			if((outputFile = (FILE*)malloc(sizeof(FILE))) == NULL){
+				printf("Malloc failed.");
+				exit(1);
+			}
+			outputFile = fopen("output.txt","w");
+			if(outputFile == NULL){
+				printf("Failed to create file.");
+				exit(1);
+			}
+			for(; stepper > -1; stepper--){
+				fputs(array[stepper],outputFile);
+			}
+			printf("Text copied to file in reverse.\n");
+			fclose(outputFile);
 			break;
 
 		default:
 			printf("Too many arguments\n");
 	}
-/**/
-
-	
-
 }
