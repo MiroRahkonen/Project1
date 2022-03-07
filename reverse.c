@@ -4,94 +4,78 @@
 
 typedef struct list {
     char line[100]; 
-    struct LIST *next;
-    struct LIST *previous;
-} LIST;
+    struct list *next;
+    struct list *previous;
+}LIST;
 
 
-/*void addtolist(LIST *start,char line[100]){
-    LIST* new
+LIST *addtolist(LIST *listStart,char line[100]){
+	LIST *newNode,*ptrList;
+    if((newNode = (LIST*) malloc(sizeof(LIST))) == NULL){
+		fprintf(stderr,"malloc failed");
+		exit(1);
+	}
+	strcpy(newNode->line,line);
+	newNode->next = NULL;
 
-    return;
-}*/
-
-void printToScreen(char *array){
-
-
-	return;
+	if(listStart == NULL){
+		listStart = newNode;
+		listStart->previous = NULL;
+	}
+	else{
+		ptrList = listStart;
+		while(ptrList->next != NULL){
+			ptrList = ptrList->next;
+		}
+		newNode->previous = ptrList;
+		ptrList->next = newNode;
+	}
+    return listStart;
 }
 
-
-void saveToFile(char argv[]){
-
-
-
+void printFromFile(LIST *listStart){
+	LIST *ptrList;
+	ptrList = listStart;
+	while(ptrList->next != NULL){
+		ptrList = ptrList->next;
+	}
+	while(ptrList->previous != NULL){
+		fprintf(stdout,ptrList->line);
+		ptrList = ptrList->previous;
+	}
+	printf("%s",ptrList->line);
 	return;
 }
-
 
 int main(int argc, char *argv[]){
-	FILE* inputFile,*outputFile;
-	char inputfilename[100] = "file.txt";
-	char line[100];
-    LIST *list = NULL;
-	char array[100][200];
-	int stepper = 0;
-
-	if((inputFile = (FILE*)malloc(sizeof(FILE))) == NULL){
-		printf("Malloc failed.");
-		exit(1);
-	}
-	/*
-	inputfilename = *argv[1];
-
-	strcpy(inputfilename,argv[1]);
-	printf("%s\n",inputfilename);*/
-
+	LIST *listStart = NULL;
+	FILE *inputFile;
+	char inputfilename[100];
+	char line[1000];
 	if(argc < 2){
-		printf("Not enough arguments.");
+		fprintf(stdout ,"Not enough arguments, usage: reverse <input>\n");
 		exit(1);
 	}
-
-    inputFile = fopen("file.txt","r");
-	if(inputFile == NULL){
-        printf("No such file exists.");
-        exit(1);
+	else if(argc > 3){
+		fprintf(stdout,"Too many arguments, usage: reverse <input>\n");
+		exit(1);
 	}
-	while(fgets(line,200,inputFile) != NULL){
-        strcpy(array[stepper],line);
-		printf("%s",array[stepper]);
-		stepper += 1;
-    }
-	fclose(inputFile);
-    
-	printf("\n");
-
-	switch(argc){
-		case 2:
-			for(; stepper > -1; stepper--){
-				printf("%s",array[stepper]);
-			}
-			break;
-
-		case 3:
-			if((outputFile = (FILE*)malloc(sizeof(FILE))) == NULL){
-				printf("Malloc failed.");
-				exit(1);
-			}
-			outputFile = fopen("output.txt","w");
-			if(outputFile == NULL){
-				printf("Failed to create file.");
-				exit(1);
-			}
-			for(; stepper > -1; stepper--){
-				fputs(array[stepper],outputFile);
-			}
-			printf("Text copied to file in reverse.\n");
-			fclose(outputFile);
-			break;
-
-		default:
-			printf("Too many arguments\n");
+	else{
+		if((inputFile = (FILE*)malloc(sizeof(FILE))) == NULL){
+			fprintf(stderr,"malloc failed");
+			exit(1);
+		}
+		strcpy(inputfilename,argv[1]);
+    	inputFile = fopen(inputfilename,"r");
+		if(inputFile == NULL){
+        	fprintf(stderr,"error: cannot open file '%s'\n",inputfilename);
+        	exit(1);
+		}
+		while(fgets(line,1000,inputFile) != NULL){
+			listStart = addtolist(listStart,line);
+    	}
+		fclose(inputFile);
+		printFromFile(listStart);
 	}
+	return 0;
 }
