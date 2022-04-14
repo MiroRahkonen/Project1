@@ -8,7 +8,6 @@ int main(int argc,char *argv[]){
     FILE *file;
 
     if(argc < 2){
-        fprintf(stdout,"my-cat: [file ...]\n");
         exit(0);
     }
     else{
