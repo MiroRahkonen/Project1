@@ -8,7 +8,6 @@ int main(int argc, char *argv[]){
     FILE *inputfile;
     int i, counter = 1, emptytest;
 	char current_char, next_char;
-	char redirect[1];
 
     if(argc<2){
         printf("my-zip: file1 [file2 ...]\n");
